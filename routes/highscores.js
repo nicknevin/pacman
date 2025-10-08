@@ -16,11 +16,14 @@ router.get('/list', urlencodedParser, function(req, res, next) {
     console.log('[GET /highscores/list]');
     Database.getDb(req.app, function(err, db) {
         if (err) {
+            console.log('[GET /highscores/list] error:', err);
             return next(err);
         }
 
         // Retrieve the top 10 high scores
+        console.log('[GET /highscores/list] getting collection');
         var col = db.collection('highscore');
+        console.log('[GET /highscores/list] got collection');
         col.find({}).sort([['score', -1]]).limit(10).toArray(function(err, docs) {
             var result = [];
             if (err) {
@@ -33,6 +36,7 @@ router.get('/list', urlencodedParser, function(req, res, next) {
                               score: item['score'] });
             });
 
+            console.log('[GET /highscores/list] result', result);
             res.json(result);
         });
     });
